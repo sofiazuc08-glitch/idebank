@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idebank - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .logout-button {
+            padding: 10px 25px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #764ba2;
+        }
+
+        .container {
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .idea-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .idea-table thead {
+            background-color: #f8f9fa;
+        }
+
+        .idea-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .idea-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            color: #666;
+        }
+
+        .idea-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 30px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .open-button {
+            flex: 1;
+            padding: 12px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .open-button:hover {
+            background-color: #764ba2;
+        }
+
+        .open-button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>IDEBANK</h1>
+        <button class="logout-button" onclick="logout()">Log ud</button>
+    </div>
+
+    <div class="container">
+        <div class="section" id="all-ideas-section">
+            <h2>Alle idéer</h2>
+            <table class="idea-table">
+                <thead>
+                    <tr>
+                        <th>Titel</th>
+                        <th>Kategori</th>
+                        <th>Medarbejder (ID)</th>
+                        <th>Dato</th>
+                    </tr>
+                </thead>
+                <tbody id="all-ideas-list">
+                    <tr>
+                        <td colspan="4" class="empty-message">Ingen idéer endnu</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section" id="answered-ideas-section">
+            <h2>Besvarede idéer</h2>
+            <table class="idea-table">
+                <thead>
+                    <tr>
+                        <th>Titel</th>
+                        <th>Medarbejder (ID)</th>
+                    </tr>
+                </thead>
+                <tbody id="answered-ideas-list">
+                    <tr>
+                        <td colspan="2" class="empty-message">Ingen besvarede idéer endnu</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            loadPage();
+        });
+
+        function loadPage() {
+            const username = localStorage.getItem('username');
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            
+            if (!username || !isAdmin) {
+                window.location.href = 'tom.html';
+                return;
+            }
+            
+            loadIdeas();
+        }
+
+        function loadIdeas() {
+            const ideas = JSON.parse(localStorage.getItem('ideas')) || [];
+            const allIdeasList = document.getElementById('all-ideas-list');
+            const userIdeas = ideas.filter(idea => idea.medarbejder !== 'tommyleder');
+            
+            if (userIdeas.length === 0) {
+                allIdeasList.innerHTML = '<tr><td colspan="4" class="empty-message">Ingen idéer fra medarbejdere endnu</td></tr>';
+            } else {
+                allIdeasList.innerHTML = '';
+                userIdeas.forEach(idea => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${idea.titel}</td>
+                        <td>${idea.kategori}</td>
+                        <td>${idea.medarbejder} (${idea.medarbejderId})</td>
+                        <td>${idea.dato}</td>
+                    `;
+                    allIdeasList.appendChild(row);
+                });
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('username');
+            localStorage.removeItem('isAdmin');
+            window.location.href = 'tom.html';
+        }
+    </script>
+</body>
+</html>

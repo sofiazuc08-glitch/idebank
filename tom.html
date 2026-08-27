@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idebank - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 30px;
+            background-color: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .login-button:hover {
+            background-color: #764ba2;
+        }
+
+        .login-button:active {
+            transform: scale(0.98);
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>IDEBANK</h1>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="brugernavn">Brugernavn</label>
+                <input type="text" id="brugernavn" name="brugernavn" placeholder="Indtast dit brugernavn" required>
+            </div>
+
+            <div class="form-group">
+                <label for="adgangskode">Adgangskode</label>
+                <input type="password" id="adgangskode" name="adgangskode" placeholder="Indtast din adgangskode" required>
+            </div>
+
+            <button type="button" class="login-button" onclick="handleLogin()">Log ind</button>
+            
+            <div class="error-message" id="errorMessage">
+                Brugernavn eller adgangskode er tomt
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function handleLogin() {
+            const brugernavn = document.getElementById('brugernavn').value;
+            const adgangskode = document.getElementById('adgangskode').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (brugernavn.trim() === '' || adgangskode.trim() === '') {
+                errorMessage.textContent = 'Brugernavn og adgangskode er påkrævet';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            if (brugernavn === 'tommyleder' && adgangskode === 'sofiamichelle') {
+                localStorage.setItem('username', brugernavn);
+                localStorage.setItem('isAdmin', 'true');
+                window.location.href = 'empty.html';
+            } else {
+                localStorage.setItem('username', brugernavn);
+                localStorage.setItem('isAdmin', 'false');
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+    </script>
+</body>
+</html>
