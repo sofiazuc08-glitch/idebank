@@ -184,9 +184,11 @@
 
         function loadPage() {
             const username = localStorage.getItem('username');
-            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            const isAdmin = localStorage.getItem('isAdmin');
             
-            if (!username || !isAdmin) {
+            // Hvis bruger IKKE er logget ind som admin
+            if (!username || isAdmin !== 'true') {
+                localStorage.clear();
                 window.location.href = 'tom.html';
                 return;
             }
@@ -217,8 +219,7 @@
         }
 
         function logout() {
-            localStorage.removeItem('username');
-            localStorage.removeItem('isAdmin');
+            localStorage.clear();
             window.location.href = 'tom.html';
         }
     </script>
