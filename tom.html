@@ -124,6 +124,20 @@
     </div>
 
     <script>
+        // Tjek om brugeren allerede er logget ind
+        window.addEventListener('load', function() {
+            const username = localStorage.getItem('username');
+            const isAdmin = localStorage.getItem('isAdmin');
+            
+            if (username && isAdmin) {
+                if (isAdmin === 'true') {
+                    window.location.href = 'empty.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+
         function handleLogin() {
             const brugernavn = document.getElementById('brugernavn').value;
             const adgangskode = document.getElementById('adgangskode').value;
@@ -135,14 +149,23 @@
                 return;
             }
             
+            // Clear error message
+            errorMessage.style.display = 'none';
+            
             if (brugernavn === 'tommyleder' && adgangskode === 'sofiamichelle') {
-                localStorage.setItem('username', brugernavn);
+                localStorage.setItem('username', 'tommyleder');
                 localStorage.setItem('isAdmin', 'true');
-                window.location.href = 'empty.html';
+                // Vent kort for at sikre localStorage er opdateret
+                setTimeout(() => {
+                    window.location.href = 'empty.html';
+                }, 100);
             } else {
                 localStorage.setItem('username', brugernavn);
                 localStorage.setItem('isAdmin', 'false');
-                window.location.href = 'index.html';
+                // Vent kort for at sikre localStorage er opdateret
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 100);
             }
         }
 
